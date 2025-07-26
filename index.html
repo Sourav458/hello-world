@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 90%;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    textarea, input[type="datetime-local"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 1rem;
+      }
+
+      textarea, input, button {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Daily Expense Input</h2>
+    
+    <form id="expenseForm">
+      <label for="paragraph">Enter your expenses (in paragraph):</label>
+      <textarea id="paragraph" name="paragraph" rows="5" required placeholder="E.g., On July 26, I spent 50 on lunch and 100 on medicine..."></textarea>
+
+      <label for="datetime">Select Date & Time:</label>
+      <input type="datetime-local" id="datetime" name="datetime" required />
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('expenseForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const paragraph = document.getElementById('paragraph').value;
+      const datetime = document.getElementById('datetime').value;
+
+      const payload = {
+        paragraph,
+        datetime
+      };
+
+      try {
+        const response = await fetch('/process-expense', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        alert('Expense processed successfully!');
+        console.log(result);
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert('Something went wrong.');
+      }
+    });
+  </script>
+
+</body>
+</html>
